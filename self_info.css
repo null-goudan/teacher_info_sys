@@ -1,0 +1,24 @@
+QPushButton#close_btn{
+    min-height: 20px;
+    min-width: 20px;
+    background-color: rgb(5,186,251);
+    border: white;
+    font-size: 18px;
+    text-align: center;
+    color: white;
+    border-top-right-radius: 10px;
+}
+
+QPushButton#close_btn:hover{
+    min-height: 20px;
+    min-width: 20px;
+    background-color: red;
+    border: white;
+    font-size: 18px;
+    text-align: center;
+    color: white;
+}
+QWidget#m_widget{
+    background-color: rgb(5,186,251);
+    border-radius: 10px;
+}

@@ -1,0 +1,84 @@
+QPushButton#close_btn{
+    min-height: 20px;
+    min-width: 20px;
+    background-color: rgb(5,186,251);
+    border: white;
+    font-size: 18px;
+    text-align: center;
+    color: white;
+}
+
+QPushButton#close_btn:hover{
+    min-height: 20px;
+    min-width: 20px;
+    background-color: red;
+    border: white;
+    font-size: 18px;
+    text-align: center;
+    color: white;
+}
+
+QPushButton#min_btn{
+    min-height: 20px;
+    min-width: 20px;
+    background-color: rgb(5,186,251);
+    border: white;
+    font-size: 18px;
+    text-align: center;
+    color: white;
+}
+
+QPushButton#min_btn:hover{
+    min-height: 20px;
+    min-width: 20px;
+    background-color: rgb(200,200,200);
+    border: white;
+    font-size: 18px;
+    text-align: center;
+    color: white;
+}
+
+QPushButton#teacher_info_btn{
+    border: white;
+    font-size: 18px;
+    text-align: center;
+    border-bottom: 1px solid white;
+}
+QPushButton#teacher_info_btn:hover{
+    background-color: cornflowerblue;
+}
+QPushButton#teacher_work_info_btn{
+    border: white;
+    font-size: 18px;
+    text-align: center;
+    border-bottom: 1px solid white;
+}
+QPushButton#teacher_work_info_btn:hover{
+    background-color: cornflowerblue;
+}
+QPushButton#teacher_level_info_btn{
+    border: white;
+    font-size: 18px;
+    text-align: center;
+    border-bottom: 1px solid white;
+}
+QPushButton#teacher_level_info_btn:hover{
+    background-color: cornflowerblue;
+}
+
+QWidget#m_wighet{
+    background-color: rgb(5,186,251);
+    border-radius: 10px;
+}
+
+QLabel#windowtitle{
+    font-size: 24px;
+    margin-top: 0;
+    padding-left: 5;
+    font: bold 'yahei' 30px;
+}
+
+QStackedWidget#m_window{
+    background-color: rgb(235,242,255);
+    border-radius: 5px;
+}

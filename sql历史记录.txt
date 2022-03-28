@@ -1,0 +1,142 @@
+create database human_res;
+
+create table normal_user(
+	username varchar(32) NOT NULL,
+	passward varchar(32),
+	PRIMARY KEY(username)
+);
+
+INSERT INTO normal_user (username, passward) VALUES (837471654, 123456);
+
+ALTER table normal_user change passward password varchar(32);
+
+CREATE table teacher_info(
+	teacher_id varchar(32) NOT NULL,
+	teacher_name varchar(16),
+	teacher_sex varchar(4),
+	teacher_birthday Date,
+	teacher_minzu varchar(16),
+	teacher_addres varchar(60),
+	teacher_idty varchar(54),
+	teacher_school varchar(64),
+	teacher_stu_his varchar(16),
+	teacher_stu_type varchar(16),
+	teacher_add varchar(128)	
+);
+
+INSERT INTO teacher_info
+(
+	teacher_id,
+	teacher_name,
+	teacher_sex,
+	teacher_birthday,
+	teacher_minzu,
+	teacher_addres ,
+	teacher_idty,
+	teacher_school,
+	teacher_stu_his,
+	teacher_stu_type,
+	teacher_add
+)
+VALUES
+(
+	1,
+	'yyx',
+	'男',
+	DATE('2002-09-01'),
+	'汉',
+	'zzuli',
+	'共产党员',
+	'zzuli',
+	'研究生',
+	'计算机',
+	'郑州轻工'
+);
+
+ALTER TABLE teacher_info ADD username_id varchar(32);
+
+ALTER TABLE teacher_info ADD CONSTRAINT username_id FOREIGN KEY (username_id) REFERENCES normal_user(id);
+
+
+UPDATE teacher_info SET username_id = '837471654' WHERE teacher_id = 1;
+
+CREATE TABLE admin_user(
+	username varchar(32) NOT NULL,
+	password varchar(32),
+	PRIMARY KEY(username)
+);
+
+INSERT INTO normal_user (username, password) VALUES (admin, 123456);
+
+ALTER TABLE teacher_info
+ADD PRIMARY KEY (teacher_id);
+
+CREATE TABLE work_record(
+	id  int NOT NULL,
+	user_id varchar(32) NOT NULL,
+	work_date DATE,
+	PRIMARY KEY(id),
+	FOREIGN KEY (user_id) REFERENCES teacher_info(teacher_id)
+);
+
+INSERT INTO work_record(
+	id,
+	user_id,
+	work_date
+)
+VALUES
+(
+	3,
+	123,
+	NOW()
+);
+
+
+ALTER TABLE work_record CHANGE work_date work_date DATETIME;
+
+
+CREATE TABLE leave_record(
+	id int NOT NULL,
+	user_id varchar(32),
+	leave_time DATETIME,
+	PRIMARY KEY(id),
+	FOREIGN KEY (user_id) REFERENCES teacher_info(teacher_id)
+);
+
+INSERT INTO leave_record(
+	id,
+	user_id,
+	leave_time 
+)
+VALUES
+(
+	3,
+	123,
+	NOW()
+);
+
+
+CREATE TABLE holiday_ask(
+	id int NOT NULL,
+	user_id varchar(32),
+	holiday_ask_date DATE,
+	PRIMARY KEY(id),
+	FOREIGN KEY (user_id) REFERENCES teacher_info(teacher_id)
+);
+
+INSERT INTO holiday_ask(
+	id,
+	user_id,
+	holiday_ask_date 
+)
+VALUES
+(
+	3,
+	123,
+	NOW()
+);
+
+ALTER TABLE work_record MODIFY id int auto_increment;
+ALTER TABLE leave_record MODIFY id int auto_increment;
+ALTER TABLE holiday_ask MODIFY id int auto_increment;
+
