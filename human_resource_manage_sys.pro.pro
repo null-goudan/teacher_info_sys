@@ -21,6 +21,8 @@ INCLUDEPATH += $$PWD infoshow/
 include($$PWD/infoshow/infoshow.pri)
 INCLUDEPATH += $$PWD statistician/
 include($$PWD/statistician/statistician.pri)
+INCLUDEPATH += $$PWD updatewidget/
+include($$PWD/updatewidget/updatewidget.pri)
 
 SOURCES += \
     main.cpp \

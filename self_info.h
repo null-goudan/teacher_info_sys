@@ -29,6 +29,8 @@ public:
 
 signals:
 
+public slots:
+
 private:
     QLabel* avtavl;
     QLabel* name;
@@ -52,6 +54,8 @@ private:
     bool ConnectDB();
     void getbaseinfo();
     void getworkinfo();
+    void reflash();
+
 };
 
 #endif // SELF_INFO_H

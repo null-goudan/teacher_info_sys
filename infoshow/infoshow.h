@@ -14,6 +14,7 @@ class infoshow : public QWidget
 public:
     explicit infoshow(QWidget *parent = nullptr);
     explicit infoshow(QVector<QPair<QString, QString>*> infos,QWidget *parent = nullptr);
+    void addWidget(QWidget* pos);
 signals:
 
 private:

@@ -14,6 +14,11 @@ infoshow::infoshow(QVector<QPair<QString, QString> *> infos, QWidget *parent)
     }
 }
 
+void infoshow::addWidget(QWidget *pos)
+{
+    mlayout->addRow(pos);
+}
+
 void infoshow::initUI()
 {
     mlayout = new QFormLayout(this);

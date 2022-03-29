@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QWidget>
 #include "m_tablewidget.h"
+#include <QDateTime>
 
 class work_info_wight : public m_tablewidget
 {

@@ -2,6 +2,7 @@
 #include <QFile>
 #include <QDebug>
 #include <QDateTime>
+#include "updatewidget.h"
 
 self_info::self_info(QWidget *parent) : QWidget(parent),
     m_widget(new QWidget(this)),t_widget(new QTabWidget(m_widget))
@@ -23,25 +24,48 @@ self_info::self_info(QString username, QWidget *parent): QWidget(parent),
         qr.bindValue(":teacher_id", *(this->teacher_id));
         if(qr.exec()){
             QMessageBox::warning(this, "成功", "签到时间： "+ QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss"));
+            this->userworkinfo.last()->second = "已签到" ;
         }else{
             QMessageBox::warning(this, "失败", "签到失败" + qr.lastError().text());
         }
-        this->work_add_btn->setDisabled(true);
-        this->leave_btn->setDisabled(false);
+        statistician sta(*this->teacher_id, QDate::currentDate().month());
+        if(sta.isTodayWork()){
+            this->work_add_btn->setDisabled(true);
+            if(sta.isTodayLeave()){
+                this->leave_btn->setDisabled(true);
+            }else{
+                this->leave_btn->setDisabled(false);
+            }
+        }else{
+            this->work_add_btn->setDisabled(false);
+        }
+        reflash();
     });
     connect(this->leave_btn, &QPushButton::released, this, [this](){
         QSqlQuery qr;
         qr.prepare("INSERT INTO leave_record (user_id,leave_time) VALUES (:teacher_id ,NOW());");
         qr.bindValue(":teacher_id", *(this->teacher_id));
         if(qr.exec()){
-            QMessageBox::warning(this, "成功", "签到时间： "+ QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss"));
+            QMessageBox::warning(this, "成功", "签退时间 "+ QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss"));
+            this->userworkinfo.last()->second = "已签到并签退" ;
         }else{
-            QMessageBox::warning(this, "失败", "签到失败" + qr.lastError().text());
+            QMessageBox::warning(this, "失败", "签退失败" + qr.lastError().text());
         }
-        this->leave_btn->setDisabled(true);
-        this->work_add_btn->setDisabled(false);
+        statistician sta(*this->teacher_id, QDate::currentDate().month());
+        if(sta.isTodayWork()){
+            this->work_add_btn->setDisabled(true);
+            if(sta.isTodayLeave()){
+                this->leave_btn->setDisabled(true);
+            }else{
+                this->leave_btn->setDisabled(false);
+            }
+        }else{
+            this->work_add_btn->setDisabled(false);
+        }
+        reflash();
     });
     getworkinfo();
+    connect(this->leave_ask_btn, &QPushButton::released, this, &self_info::reflash);
 }
 
 void self_info::initUI()
@@ -90,7 +114,7 @@ void self_info::initUI()
         }
     }
 
-    statistician* sta = new statistician(*this->teacher_id, 3);
+    statistician* sta = new statistician(*this->teacher_id, QDate::currentDate().month());
     if(sta->isTodayWork()){
         this->userworkinfo.append(new QPair<QString, QString>("今日签到状态：", "已签到"));
         this->work_add_btn->setDisabled(true);
@@ -98,7 +122,21 @@ void self_info::initUI()
             this->leave_btn->setDisabled(true);
         }
     }
-
+    QPushButton *update_self_info = new QPushButton("更改自己的信息");
+    this->tab_1->addWidget(update_self_info);
+    if(this->userbaseinfo.length()>3){
+        connect(update_self_info, &QPushButton::released, this, [=]{
+            updatewidget* uw = new updatewidget( *this->teacher_id,*this->username);
+            uw->exec();
+            reflash();
+        });
+    }else{
+        connect(update_self_info, &QPushButton::released, this, [=]{
+            updatewidget* uw = new updatewidget(*this->username);
+            uw->exec();
+            reflash();
+        });
+    }
     QFile f(":/image/self_info.css");
     f.open(QIODevice::ReadOnly);
     QString style = f.readAll();
@@ -160,16 +198,16 @@ void self_info::getbaseinfo()
 
 void self_info::getworkinfo()
 {
-    statistician* sta = new statistician(*this->teacher_id, 3);
+    statistician* sta = new statistician(*this->teacher_id, QDateTime::currentDateTime().date().month());
     QString temp = QString("%1");
-    QString * num_work_late = new QString(temp.arg(sta->getNumOfWorkLate(QDateTime::currentDateTime().date().month())));
-    this->userworkinfo.append(new QPair<QString, QString>("迟到次数：", *num_work_late));
-    QString * num_leave_early = new QString(temp.arg(sta->getNumOfLeaveEarly(QDateTime::currentDateTime().date().month())));
-    this->userworkinfo.append(new QPair<QString, QString>("早退次数", *num_leave_early));
-    QString * num_work_day = new QString(temp.arg(sta->getNumOfWorkDayMouth()));
-    this->userworkinfo.append(new QPair<QString, QString>("签到次数", *num_work_day));
-    QString * num_outwork_day = new QString(temp.arg(sta->getNumOFoutWorkDayMouth()));
-    this->userworkinfo.append(new QPair<QString, QString>("缺勤次数", *num_outwork_day));
+    QString num_work_late = QString(temp.arg(sta->getNumOfWorkLate(QDateTime::currentDateTime().date().month())));
+    this->userworkinfo.append(new QPair<QString, QString>("迟到次数：", num_work_late));
+    QString num_leave_early = QString(temp.arg(sta->getNumOfLeaveEarly(QDateTime::currentDateTime().date().month())));
+    this->userworkinfo.append(new QPair<QString, QString>("早退次数", num_leave_early));
+    QString num_work_day = QString(temp.arg(sta->getNumOfWorkDayMouth()));
+    this->userworkinfo.append(new QPair<QString, QString>("签到次数", num_work_day));
+    QString num_outwork_day = QString(temp.arg(sta->getNumOFoutWorkDayMouth()));
+    this->userworkinfo.append(new QPair<QString, QString>("缺勤次数", num_outwork_day));
     if(sta->isTodayWork()){
         this->userworkinfo.append(new QPair<QString, QString>("今日签到状态：", "已签到"));
         if(sta->isTodayLeave()){
@@ -179,4 +217,65 @@ void self_info::getworkinfo()
     }else{
         this->userworkinfo.append(new QPair<QString, QString>("今日签到状态：", "未签到"));
     }
+}
+
+void self_info::reflash()
+{
+    QSqlQuery qr;
+    qr.prepare("select * from teacher_info where username_id = :username");
+    qr.bindValue(":username", *this->username);
+    if(qr.exec()){
+        qr.next();
+        QSqlRecord qrc = qr.record();
+        int teacher_id_idx =qrc.indexOf("teacher_id");
+        this->userbaseinfo.first()->second = qrc.value(teacher_id_idx).toString();
+        int teacher_name_idx =qrc.indexOf("teacher_name");
+        this->userbaseinfo.at(1)->second =  qrc.value(teacher_name_idx).toString();
+        int teacher_sex_idx =qrc.indexOf("teacher_sex");
+        this->userbaseinfo.at(2)->second =  qrc.value(teacher_sex_idx).toString();
+        int teacher_birthday_idx =qrc.indexOf("teacher_birthday");
+        this->userbaseinfo.at(3)->second =  qrc.value(teacher_birthday_idx).toString();
+        int teacher_minzu_idx =qrc.indexOf("teacher_minzu");
+        this->userbaseinfo.at(4)->second =  qrc.value(teacher_minzu_idx).toString();
+        int teacher_addres_idx =qrc.indexOf("teacher_addres");
+        this->userbaseinfo.at(5)->second =  qrc.value(teacher_addres_idx).toString();
+        int teacher_idty_idx =qrc.indexOf("teacher_idty");
+        this->userbaseinfo.at(6)->second =  qrc.value(teacher_idty_idx).toString();
+        int teacher_school_idx =qrc.indexOf("teacher_school");
+        this->userbaseinfo.at(7)->second =  qrc.value(teacher_school_idx).toString();
+        int teacher_stu_his_idx =qrc.indexOf("teacher_stu_his");
+        this->userbaseinfo.at(8)->second =  qrc.value(teacher_stu_his_idx).toString();
+        int teacher_stu_type_idx =qrc.indexOf("teacher_stu_type");
+        this->userbaseinfo.at(9)->second =  qrc.value(teacher_stu_type_idx).toString();
+        int teacher_add_idx =qrc.indexOf("teacher_add");
+       this->userbaseinfo.at(10)->second =  qrc.value(teacher_add_idx).toString();
+    }
+
+    infoshow* deletetab = tab_1;
+    tab_1 = new infoshow(this->userbaseinfo);
+    QPushButton *update_self_info = new QPushButton("更改自己的信息");
+    this->tab_1->addWidget(update_self_info);
+    if(this->userbaseinfo.length()>3){
+        connect(update_self_info, &QPushButton::released, this, [=]{
+            updatewidget* uw = new updatewidget( *this->teacher_id,*this->username);
+            uw->exec();
+            reflash();
+        });
+    }else{
+        connect(update_self_info, &QPushButton::released, this, [=]{
+            updatewidget* uw = new updatewidget(*this->username);
+            uw->exec();
+            reflash();
+        });
+    }
+
+    delete deletetab;
+    infoshow* deletetab_2 = static_cast<infoshow*>(tab_2);
+    this->userworkinfo.clear();
+    getworkinfo();
+    tab_2 = new infoshow(this->userworkinfo);
+    delete deletetab_2;
+
+    this->t_widget->addTab(tab_1, "基本信息");
+    this->t_widget->addTab(tab_2, "工作信息");
 }

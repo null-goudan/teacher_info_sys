@@ -41,31 +41,18 @@ void work_info_wight::init_view()
     while(qr.next()){
         QSqlRecord qrc = qr.record();
         QList<QStandardItem*> l;
-        for(int i =0;i<qrc.count(); i++){
-            if(i==0){
-                QSqlQuery qr2;
-                qr2.prepare("select * from teacher_info where teacher_id = :teacher_id");
-                qr2.bindValue(":teacher_id",  qr.value(1).toString());
-                qr2.exec();
-                qr2.next();
-                QSqlRecord qrc = qr2.record();
-                int teacher_name_idx = qrc.indexOf("teacher_id");
-                l<<new QStandardItem(qrc.value(teacher_name_idx).toString());
-            }
-            else if(i==1){
-                QSqlQuery qr2;
-                qr2.prepare("select * from teacher_info where teacher_id = :teacher_id");
-                qr2.bindValue(":teacher_id",  qr.value(1).toString());
-                qr2.exec();
-                qr2.next();
-                QSqlRecord qrc = qr2.record();
-                int teacher_name_idx = qrc.indexOf("teacher_name");
-                l<<new QStandardItem(qrc.value(teacher_name_idx).toString());
-            }else{
-                l<<new QStandardItem(qr.value(i).toString());
-            }
-        }
-        l<<new QStandardItem("上班签到");
+        QSqlQuery qr2;
+        qr2.prepare("select * from teacher_info where teacher_id = :teacher_id");
+        qr2.bindValue(":teacher_id", qr.value(1).toString());
+        qr2.exec();
+        qr2.next();
+        QSqlRecord qrc2 = qr2.record();
+        int teacher_id_idx = qrc2.indexOf("teacher_id");
+        l<<new QStandardItem(qrc2.value(teacher_id_idx).toString());
+        int teacher_name_idx = qrc2.indexOf("teacher_name");
+        l<<new QStandardItem(qrc2.value(teacher_name_idx).toString());
+        l<<new QStandardItem(qr.value(2).toDateTime().toString("yyyy-MM-dd hh:mm:ss"));
+        l<<new QStandardItem("签到");
         model->insertRow(model->rowCount(), l);
     }
     qr.prepare("select * from leave_record");
@@ -76,32 +63,18 @@ void work_info_wight::init_view()
     while(qr.next()){
         QSqlRecord qrc = qr.record();
         QList<QStandardItem*> l;
-        for(int i =0;i<qrc.count(); i++){
-            if(i==0){
-                QSqlQuery qr2;
-                qr2.prepare("select * from teacher_info where teacher_id = :teacher_id");
-                qr2.bindValue(":teacher_id", qr.value(1).toString());
-                qDebug()<<qr2.lastQuery();
-                qr2.exec();
-                qr2.next();
-                QSqlRecord qrc = qr2.record();
-                int teacher_name_idx = qrc.indexOf("teacher_id");
-                l<<new QStandardItem(qrc.value(teacher_name_idx).toString());
-            }
-            else if(i==1){
-                QSqlQuery qr2;
-                qr2.prepare("select * from teacher_info where teacher_id = :teacher_id");
-                qr2.bindValue(":teacher_id", qr.value(1).toString());
-                qr2.exec();
-                qr2.next();
-                QSqlRecord qrc = qr2.record();
-                int teacher_name_idx = qrc.indexOf("teacher_name");
-                l<<new QStandardItem(qrc.value(teacher_name_idx).toString());
-            }else{
-                l<<new QStandardItem(qr.value(i).toString());
-            }
-        }
-        l<<new QStandardItem("下班");
+        QSqlQuery qr2;
+        qr2.prepare("select * from teacher_info where teacher_id = :teacher_id");
+        qr2.bindValue(":teacher_id", qr.value(1).toString());
+        qr2.exec();
+        qr2.next();
+        QSqlRecord qrc2 = qr2.record();
+        int teacher_id_idx = qrc2.indexOf("teacher_id");
+        l<<new QStandardItem(qrc2.value(teacher_id_idx).toString());
+        int teacher_name_idx = qrc2.indexOf("teacher_name");
+        l<<new QStandardItem(qrc2.value(teacher_name_idx).toString());
+        l<<new QStandardItem(qr.value(2).toDateTime().toString("yyyy-MM-dd hh:mm:ss"));
+        l<<new QStandardItem("签退");
         model->insertRow(model->rowCount(), l);
     }
     this->view->setModel(model);

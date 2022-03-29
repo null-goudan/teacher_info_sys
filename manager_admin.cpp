@@ -37,7 +37,7 @@ void manager_admin::initUI()
     teacher_work_info_btn = new QPushButton("教师考勤信息",this->m_wighet);
     teacher_work_info_btn->setObjectName("teacher_work_info_btn");
     teacher_work_info_btn->setGeometry(5,105,180,35);
-    teacher_level_info_btn = new QPushButton("教师等级信息",this->m_wighet);
+    teacher_level_info_btn = new QPushButton("教师统计信息",this->m_wighet);
     teacher_level_info_btn->setObjectName("teacher_level_info_btn");
     teacher_level_info_btn->setGeometry(5,140,180,35);
     m_window = new QStackedWidget(this->m_wighet);

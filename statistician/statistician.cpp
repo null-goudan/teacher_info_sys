@@ -42,15 +42,8 @@ int statistician::getNumOfWorkDayMouth()
 int statistician::getNumOFoutWorkDayMouth()
 {
     QDate today = QDate::currentDate();
-    int mouth = today.month();
-    if( mouth == 1|| mouth == 3 || mouth == 5 || mouth == 7 || mouth == 8 ||
-            mouth == 10 || mouth == 12)
-        return 31-getNumOfWorkDayMouth();
-    else if(mouth == 2){
-        return 28-getNumOfWorkDayMouth();
-    }else{
-        return 30-getNumOfWorkDayMouth();
-    }
+    int day = today.day();
+    return day- getNumOfWorkDayMouth();
 }
 
 bool statistician::isTodayWork()

@@ -9,8 +9,8 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    self_info w("837471654");
-    //Login w;
+    //self_info w("837471654");
+    Login w;
     //manager_admin w;
     //work_info_wight w;
     w.show();
